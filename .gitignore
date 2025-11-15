@@ -1,0 +1,5 @@
+/.env
+/dist
+/scripts
+/node_modules
+/package-lock.json

@@ -1,0 +1,39 @@
+{
+	"name": "teyvat-api",
+	"description": "An open-source REST API providing structured data on Genshin Impact characters and artifact sets, built with TypeScript and Express for developers to integrate Teyvat's world into their apps.",
+	"scripts": {
+		"build": "tsc",
+		"start": "node dist/server.js",
+		"seed": "ts-node scripts/seedDatabase.ts",
+		"test": "jest --runInBand --detectOpenHandles --forceExit",
+		"dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+	},
+	"dependencies": {
+		"bcrypt": "^6.0.0",
+		"compression": "^1.8.1",
+		"cors": "^2.8.5",
+		"dotenv": "^17.2.3",
+		"express": "^5.1.0",
+		"express-rate-limit": "^8.1.0",
+		"express-validator": "^7.3.0",
+		"helmet": "^8.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^8.19.2"
+	},
+	"devDependencies": {
+		"@types/bcrypt": "^6.0.0",
+		"@types/compression": "^1.8.1",
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.4",
+		"@types/jest": "^30.0.0",
+		"@types/jsonwebtoken": "^9.0.10",
+		"@types/supertest": "^6.0.3",
+		"@vercel/node": "^5.5.6",
+		"jest": "^30.2.0",
+		"supertest": "^7.1.4",
+		"ts-jest": "^29.4.5",
+		"ts-node": "^10.9.2",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.9.3"
+	}
+}
