@@ -21,6 +21,7 @@ describe("Artifact Validators Test", () => {
         apiKey = await createApiKey(adminToken, "art_val_key");
 
         await createArtifactApi(
+            apiKey,
             adminToken,
             buildArtifactPayload({
                 id: "viridescent_venerer",
@@ -34,6 +35,7 @@ describe("Artifact Validators Test", () => {
         );
 
         await createArtifactApi(
+            apiKey,
             adminToken,
             buildArtifactPayload({
                 id: "blizzard_strayer",
@@ -49,6 +51,7 @@ describe("Artifact Validators Test", () => {
         );
 
         await createArtifactApi(
+            apiKey,
             adminToken,
             buildArtifactPayload({
                 id: "resolution_of_sojourner",
@@ -68,7 +71,7 @@ describe("Artifact Validators Test", () => {
 
     test("list returns only ids", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts")
+            .get("/v1/artifacts")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.data)).toBe(true);
@@ -77,7 +80,7 @@ describe("Artifact Validators Test", () => {
 
     test("region filter narrows results", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?region=Mondstadt&sortBy=name")
+            .get("/v1/artifacts?region=Mondstadt&sortBy=name")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(new Set(res.body.data)).toEqual(new Set(["resolution_of_sojourner", "viridescent_venerer"]));
@@ -85,7 +88,7 @@ describe("Artifact Validators Test", () => {
 
     test("rarity filter returns only matching rarity", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?rarity=5&sortBy=name")
+            .get("/v1/artifacts?rarity=5&sortBy=name")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toHaveLength(2);
@@ -94,7 +97,7 @@ describe("Artifact Validators Test", () => {
 
     test("sort by version ascending", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?sortBy=versionAdded&sortOrder=asc")
+            .get("/v1/artifacts?sortBy=versionAdded&sortOrder=asc")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data[0]).toBe("resolution_of_sojourner");
@@ -102,7 +105,7 @@ describe("Artifact Validators Test", () => {
 
     test("name filter returns exact match", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?name=Blizzard Strayer")
+            .get("/v1/artifacts?name=Blizzard Strayer")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual(["blizzard_strayer"]);
@@ -110,7 +113,7 @@ describe("Artifact Validators Test", () => {
 
     test("versionAdded filter returns matching artifacts", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?versionAdded=1.0&sortBy=name")
+            .get("/v1/artifacts?versionAdded=1.0&sortBy=name")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(new Set(res.body.data)).toEqual(new Set(["resolution_of_sojourner", "viridescent_venerer"]));
@@ -118,7 +121,7 @@ describe("Artifact Validators Test", () => {
 
     test("releaseDate filter matches artifacts released that day", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?releaseDate=2020-12-23")
+            .get("/v1/artifacts?releaseDate=2020-12-23")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual(["blizzard_strayer"]);
@@ -126,7 +129,7 @@ describe("Artifact Validators Test", () => {
 
     test("invalid sort field is rejected", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?sortBy=invalidField")
+            .get("/v1/artifacts?sortBy=invalidField")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(400);
         expect(res.body.success).toBe(false);
@@ -134,7 +137,7 @@ describe("Artifact Validators Test", () => {
 
     test("details endpoint reflects stored data", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts/blizzard_strayer")
+            .get("/v1/artifacts/blizzard_strayer")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data.setBonus.twoPiece).toContain("Cryo");
@@ -142,7 +145,7 @@ describe("Artifact Validators Test", () => {
 
     test("update disallows id mutation", async () => {
         const res = await request(app)
-            .put("/api/v1/artifacts/viridescent_venerer")
+            .put("/v1/artifacts/viridescent_venerer")
             .set("Authorization", `Bearer ${adminToken}`)
             .send({ id: "new-id" });
 

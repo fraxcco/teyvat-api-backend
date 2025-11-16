@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { TalentField } from "../../enums/";
 import { ICharacter } from "../../interfaces/";
 import { CharacterRarity, CharacterRegion, CharacterElement, CharacterWeaponType, CharacterAscensionStatType } from "../../enums/";
 
@@ -17,16 +16,19 @@ const createAscensionStatsSchema = (): Record<string, any> => {
     }, {} as Record<string, any>);
 };
 
-const createTalentSchema = (isBasic: boolean = false): Record<string, any> => {
-    return Object.values(TalentField).filter((value) => typeof value === "string").reduce((schema, field) => {
-        if(field === TalentField.NAME || field === TalentField.DESCRIPTION) {
-            schema[field] = { type: String, required: true };
-        } else {
-            schema[field] = { type: Number, required: !isBasic };
-        };
+const createTalentSchema = (type: "basic" | "full"): Record<string, any> => {
+    const schema: Record<string, any> = {
+        name: { type: String, required: true },
+        description: { type: String, required: true }
+    };
     
-        return schema;
-    }, {} as Record<string, any>);
+    if(type === "full") {
+        schema.energyCost = { type: Number, required: false };
+        schema.cooldown = { type: Number, required: false };
+        schema.duration = { type: Number, required: false };
+    };
+
+    return schema;
 };
 
 const CharacterSchema = new mongoose.Schema<ICharacter>({
@@ -36,7 +38,7 @@ const CharacterSchema = new mongoose.Schema<ICharacter>({
     region: { type: String, enum: REGION_VALUES, required: true },
     element: { type: String, enum: ELEMENT_VALUES, required: true },
     weaponType: { type: String, enum: WEAPON_TYPE_VALUES, required: true },
-    versionAdded: { type: String, required: true, trim: true, match: /^\d+\.\d+$/ },
+    versionAdded: { type: String, required: true, trim: true },
     releaseDate: { type: Date, required: true, set: (value: unknown) => (value ? new Date(value as string) : value), max: new Date() },
     constellations: [{
         level: { type: Number, required: true, min: 0, max: 6 },
@@ -50,9 +52,11 @@ const CharacterSchema = new mongoose.Schema<ICharacter>({
         ascensionStats: createAscensionStatsSchema()
     },
     talents: {
-        normalAttack: createTalentSchema(true),
-        elementSkill: createTalentSchema(false),
-        elementalBurst: createTalentSchema(false)
+        normalAttack: createTalentSchema("basic"),
+        chargedAttack: createTalentSchema("basic"),
+        plungingAttack: createTalentSchema("basic"),
+        elementSkill: createTalentSchema("full"),
+        elementalBurst: createTalentSchema("full")
     }
 }, {
     versionKey: false,

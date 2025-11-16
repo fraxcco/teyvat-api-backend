@@ -45,7 +45,7 @@ const extractTokens = (payload: any): AuthAccount => {
 
 export const registerAccount = async ({username, email, password = "Password123!", role}: RegisterOptions): Promise<AuthAccount> => {
     const response = await request(app)
-        .post("/api/v1/auth/register")
+        .post("/v1/auth/register")
         .send({
             email,
             username,
@@ -80,7 +80,7 @@ const buildUsername = (prefix: string, scenario: string): string => {
 export const createAdminAccount = async (scenario: string) => {
     const username = buildUsername("admin", scenario);
     const response = await request(app)
-        .post("/api/v1/auth/register")
+        .post("/v1/auth/register")
         .send({
             email: `admin_${scenario}@example.com`,
             username,
@@ -98,7 +98,7 @@ export const createAdminAccount = async (scenario: string) => {
 export const createUserAccount = async (scenario: string) => {
     const username = buildUsername("user", scenario);
     const response = await request(app)
-        .post("/api/v1/auth/register")
+        .post("/v1/auth/register")
         .send({
             email: `user_${scenario}@example.com`,
             username,
@@ -114,7 +114,7 @@ export const createUserAccount = async (scenario: string) => {
 
 export const createApiKey = async (token: string, label?: string): Promise<string> => {
     const response = await request(app)
-        .post("/api/v1/auth/apikeys")
+        .post("/v1/auth/apikeys")
         .set("Authorization", `Bearer ${token}`)
         .send({ label });
 

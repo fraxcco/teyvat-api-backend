@@ -17,7 +17,7 @@ describe("Authentication Test", () => {
     });
 
     test("register issues tokens and stores lowercase role", async () => {
-        const res = await request(app).post("/api/v1/auth/register").send({
+        const res = await request(app).post("/v1/auth/register").send({
             username: "adminUser",
             email: "admin@example.com",
             password: "Password123",
@@ -35,7 +35,7 @@ describe("Authentication Test", () => {
     });
 
     test("duplicate register fails with 409", async () => {
-        const res = await request(app).post("/api/v1/auth/register").send({
+        const res = await request(app).post("/v1/auth/register").send({
             username: "adminUser",
             email: "admin@example.com",
             password: "Password123",
@@ -45,7 +45,7 @@ describe("Authentication Test", () => {
     });
 
     test("login succeeds and returns fresh tokens", async () => {
-        const res = await request(app).post("/api/v1/auth/login").send({
+        const res = await request(app).post("/v1/auth/login").send({
             email: "admin@example.com",
             password: "Password123",
         });
@@ -56,7 +56,7 @@ describe("Authentication Test", () => {
     });
 
     test("login with wrong password returns 401", async () => {
-        const res = await request(app).post("/api/v1/auth/login").send({
+        const res = await request(app).post("/v1/auth/login").send({
             email: "admin@example.com",
             password: "WrongPass",
         });
@@ -65,13 +65,13 @@ describe("Authentication Test", () => {
     });
 
     test("profile without token returns 401", async () => {
-        const res = await request(app).get("/api/v1/users/me");
+        const res = await request(app).get("/v1/users/me");
         expect(res.status).toBe(401);
     });
 
     test("profile with token returns user info", async () => {
         const res = await request(app)
-            .get("/api/v1/users/me")
+            .get("/v1/users/me")
             .set("Authorization", `Bearer ${accessToken}`);
 
         expect(res.status).toBe(200);
@@ -80,7 +80,7 @@ describe("Authentication Test", () => {
 
     test("change password fails with wrong current password", async () => {
         const res = await request(app)
-            .put("/api/v1/auth/change-password")
+            .put("/v1/auth/change-password")
             .set("Authorization", `Bearer ${accessToken}`)
             .send({ currentPassword: "WrongPass", newPassword: "NewPassword123" });
 
@@ -89,13 +89,13 @@ describe("Authentication Test", () => {
 
     test("change password succeeds and invalidates old password", async () => {
         const change = await request(app)
-            .put("/api/v1/auth/change-password")
+            .put("/v1/auth/change-password")
             .set("Authorization", `Bearer ${accessToken}`)
             .send({ currentPassword: "Password123", newPassword: "NewPassword123" });
 
         expect(change.status).toBe(200);
 
-        const relog = await request(app).post("/api/v1/auth/login").send({
+        const relog = await request(app).post("/v1/auth/login").send({
             email: "admin@example.com",
             password: "NewPassword123",
         });
@@ -106,15 +106,15 @@ describe("Authentication Test", () => {
     });
 
     test("refresh without token returns 401", async () => {
-        const res = await request(app).post("/api/v1/auth/refresh").send({});
+        const res = await request(app).post("/v1/auth/refresh").send({});
         expect(res.status).toBe(401);
     });
 
     test("refresh rotates tokens and rejects reuse", async () => {
-        const res = await request(app).post("/api/v1/auth/refresh").send({ refreshToken });
+        const res = await request(app).post("/v1/auth/refresh").send({ refreshToken });
         expect(res.status).toBe(200);
 
-        const reused = await request(app).post("/api/v1/auth/refresh").send({ refreshToken });
+        const reused = await request(app).post("/v1/auth/refresh").send({ refreshToken });
         expect(reused.status).toBe(401);
 
         refreshToken = res.body.data.refreshToken;
@@ -122,10 +122,10 @@ describe("Authentication Test", () => {
     });
 
     test("logout revokes refresh token", async () => {
-        const logout = await request(app).post("/api/v1/auth/logout").send({ refreshToken });
+        const logout = await request(app).post("/v1/auth/logout").send({ refreshToken });
         expect(logout.status).toBe(200);
 
-        const afterLogout = await request(app).post("/api/v1/auth/refresh").send({ refreshToken });
+        const afterLogout = await request(app).post("/v1/auth/refresh").send({ refreshToken });
         expect(afterLogout.status).toBe(401);
     });
 });

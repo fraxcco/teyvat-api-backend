@@ -16,7 +16,7 @@ describe("Authentication Validators Test", () => {
     });
 
     test("register rejects missing email", async () => {
-        const res = await request(app).post("/api/v1/auth/register").send({
+        const res = await request(app).post("/v1/auth/register").send({
             username: "no-email",
             password: "Password123",
         });
@@ -26,7 +26,7 @@ describe("Authentication Validators Test", () => {
     });
 
     test("register rejects invalid email format", async () => {
-        const res = await request(app).post("/api/v1/auth/register").send({
+        const res = await request(app).post("/v1/auth/register").send({
             username: "bad-email",
             email: "not-an-email",
             password: "Password123",
@@ -37,7 +37,7 @@ describe("Authentication Validators Test", () => {
     });
 
     test("register rejects unsupported role", async () => {
-        const res = await request(app).post("/api/v1/auth/register").send({
+        const res = await request(app).post("/v1/auth/register").send({
             role: "SUPERUSER",
             email: "weird-role@example.com",
             username: "weird-role",
@@ -49,7 +49,7 @@ describe("Authentication Validators Test", () => {
     });
 
     test("successful register provides tokens", async () => {
-        const res = await request(app).post("/api/v1/auth/register").send({
+        const res = await request(app).post("/v1/auth/register").send({
             username: "edge-admin",
             email: "edge-admin@example.com",
             password: "Password123",
@@ -65,7 +65,7 @@ describe("Authentication Validators Test", () => {
     });
 
     test("login rejects malformed email", async () => {
-        const res = await request(app).post("/api/v1/auth/login").send({
+        const res = await request(app).post("/v1/auth/login").send({
             email: "bad-email",
             password: "Password123",
         });
@@ -75,7 +75,7 @@ describe("Authentication Validators Test", () => {
     });
 
     test("login rejects unknown email", async () => {
-        const res = await request(app).post("/api/v1/auth/login").send({
+        const res = await request(app).post("/v1/auth/login").send({
             email: "missing@example.com",
             password: "Password123",
         });
@@ -85,13 +85,13 @@ describe("Authentication Validators Test", () => {
     });
 
     test("refresh rejects missing token in body", async () => {
-        const res = await request(app).post("/api/v1/auth/refresh").send({});
+        const res = await request(app).post("/v1/auth/refresh").send({});
         expect(res.status).toBe(401);
         expect(res.body.success).toBe(false);
     });
 
     test("refresh rejects tampered token", async () => {
-        const res = await request(app).post("/api/v1/auth/refresh").send({
+        const res = await request(app).post("/v1/auth/refresh").send({
             refreshToken: `${refreshToken}tamper`,
         });
 
@@ -101,7 +101,7 @@ describe("Authentication Validators Test", () => {
 
     test("profile rejects malformed Authorization header", async () => {
         const res = await request(app)
-            .get("/api/v1/users/me")
+            .get("/v1/users/me")
             .set("Authorization", "Token not-bearer");
 
         expect(res.status).toBe(401);
@@ -110,7 +110,7 @@ describe("Authentication Validators Test", () => {
 
     test("change-password rejects short new password", async () => {
         const res = await request(app)
-            .put("/api/v1/auth/change-password")
+            .put("/v1/auth/change-password")
             .set("Authorization", `Bearer ${accessToken}`)
             .send({
                 currentPassword: "Password123",

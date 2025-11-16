@@ -6,11 +6,10 @@ import authRoutes from "./user/authRoutes";
 import userRoutes from "./user/userRoutes";
 
 const router = Router();
-const apiPrefix = `${environment.API_PREFIX}${environment.API_VERSION}`;
 
-router.use(`${apiPrefix}/auth`, authRoutes);
-router.use(`${apiPrefix}/users`, userRoutes);
-router.use(`${apiPrefix}/artifacts`, artifactRoutes);
-router.use(`${apiPrefix}/characters`, characterRoutes);
+router.use(`${environment.API_VERSION}/auth`, authRoutes);
+router.use(`${environment.API_VERSION}/users`, userRoutes);
+router.use(`${environment.API_VERSION}/artifacts`, artifactRoutes);
+router.use(`${environment.API_VERSION}/characters`, characterRoutes);
 
 export default router;

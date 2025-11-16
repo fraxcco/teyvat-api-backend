@@ -1,6 +1,5 @@
 import { Document } from "mongoose";
 
-// create a IUser interface
 export interface IUser extends Document {
     _id: string;
     role: string;

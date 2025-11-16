@@ -1,13 +1,12 @@
-import { CharacterRarity, CharacterRegion, CharacterElement, CharacterWeaponType, CharacterAscensionStatType } from "../../enums/";
 import { Document } from "mongoose";
 
-export interface ICharacter extends Document {
+export interface ICharacter extends Partial<Document> {
     id: string;
     name: string;
-    rarity: CharacterRarity;
-    region: CharacterRegion;
-    element: CharacterElement;
-    weaponType: CharacterWeaponType;
+    rarity: 4 | 5;
+    region: "Mondstadt" | "Liyue" | "Inazuma" | "Sumeru" | "Fontaine" | "Natlan" | "Nod-Krai" | "Snezhnaya";
+    element: "Anemo" | "Geo" | "Electro" | "Dendro" | "Hydro" | "Pyro" | "Cryo";
+    weaponType: "Sword" | "Polearm" | "Catalyst" | "Claymore" | "Bow";
     versionAdded: string;
     releaseDate: Date;
     constellations: Array<{
@@ -19,21 +18,25 @@ export interface ICharacter extends Document {
         baseHP: number;
         baseATK: number;
         baseDEF: number;
-        ascensionStats: Record<CharacterAscensionStatType, number>;
+        ascensionStats: Partial<Record<"hpPercentage" | "attackPercentage" | "defensePercentage" | "elementalMastery" | "energyRecharge" | "healingBonus" | "critRate" | "critDMG" | "bonusDMG", number>>;
     },
     talents: {
         normalAttack: {
             name: string;
             description: string;
-            energyCost?: number;
-            duration?: number;
-            cooldown?: number;
-        },
+        };
+        chargedAttack: {
+            name: string;
+            description: string;
+        };
+        plungingAttack: {
+            name: string;
+            description: string;
+        };
         elementSkill: {
             name: string;
             description: string;
-            energyCost: number;
-            duration: number;
+            duration?: number;
             cooldown: number;
         },
         elementalBurst: {

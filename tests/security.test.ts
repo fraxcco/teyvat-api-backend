@@ -27,7 +27,7 @@ describe("Security Test", () => {
 
     test("invalid Authorization header yields 401", async () => {
         const res = await request(app)
-            .get("/api/v1/users/me")
+            .get("/v1/users/me")
             .set("Authorization", "Bearer invalid-token");
 
         expect(res.status).toBe(401);
@@ -35,7 +35,7 @@ describe("Security Test", () => {
 
     test("user role blocked from artifact creation", async () => {
         const res = await request(app)
-            .post("/api/v1/artifacts")
+            .post("/v1/artifacts")
             .set("Authorization", `Bearer ${userToken}`)
             .send({
                 id: "guard_artifact",
@@ -54,7 +54,7 @@ describe("Security Test", () => {
     });
 
     test("missing Authorization header when required returns 401", async () => {
-        const res = await request(app).post("/api/v1/characters").send({
+        const res = await request(app).post("/v1/characters").send({
             id: "guard_character",
             name: "Guard",
         });
@@ -64,20 +64,20 @@ describe("Security Test", () => {
 
     test("admin token accepted for protected route", async () => {
         const res = await request(app)
-            .get("/api/v1/users/me")
+            .get("/v1/users/me")
             .set("Authorization", `Bearer ${adminToken}`);
 
         expect(res.status).toBe(200);
     });
 
     test("public endpoint requires API key", async () => {
-        const res = await request(app).get("/api/v1/artifacts");
+        const res = await request(app).get("/v1/artifacts");
         expect(res.status).toBe(401);
     });
 
     test("public endpoint accepts API key", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts")
+            .get("/v1/artifacts")
             .set("X-API-Key", apiKey);
 
         expect(res.status).toBe(200);

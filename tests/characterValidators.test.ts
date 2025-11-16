@@ -21,6 +21,7 @@ describe("Character Validators Test", () => {
         apiKey = await createApiKey(adminToken, "char_val_key");
 
         await createCharacterApi(
+            apiKey,
             adminToken,
             buildCharacterPayload({
                 id: "ALBEDO",
@@ -36,6 +37,7 @@ describe("Character Validators Test", () => {
         );
 
         await createCharacterApi(
+            apiKey,
             adminToken,
             buildCharacterPayload({
                 id: "sucrose",
@@ -51,6 +53,7 @@ describe("Character Validators Test", () => {
         );
 
         await createCharacterApi(
+            apiKey,
             adminToken,
             buildCharacterPayload({
                 id: "lisa",
@@ -72,7 +75,7 @@ describe("Character Validators Test", () => {
 
     test("uppercase id is normalized to lowercase", async () => {
         const res = await request(app)
-            .get("/api/v1/characters")
+            .get("/v1/characters")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toContain("albedo");
@@ -80,7 +83,7 @@ describe("Character Validators Test", () => {
 
     test("list sorted by rarity desc", async () => {
         const res = await request(app)
-            .get("/api/v1/characters?sortBy=rarity&sortOrder=desc")
+            .get("/v1/characters?sortBy=rarity&sortOrder=desc")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body.data)).toBe(true);
@@ -90,10 +93,10 @@ describe("Character Validators Test", () => {
 
     test("pagination returns different results by page", async () => {
         const first = await request(app)
-            .get("/api/v1/characters?limit=1&page=1&sortBy=name&sortOrder=asc")
+            .get("/v1/characters?limit=1&page=1&sortBy=name&sortOrder=asc")
             .set("X-API-Key", apiKey);
         const second = await request(app)
-            .get("/api/v1/characters?limit=1&page=2&sortBy=name&sortOrder=asc")
+            .get("/v1/characters?limit=1&page=2&sortBy=name&sortOrder=asc")
             .set("X-API-Key", apiKey);
 
         expect(first.status).toBe(200);
@@ -104,7 +107,7 @@ describe("Character Validators Test", () => {
 
     test("weaponType filter returns only matching entries", async () => {
         const res = await request(app)
-            .get("/api/v1/characters?weaponType=Catalyst&sortBy=name")
+            .get("/v1/characters?weaponType=Catalyst&sortBy=name")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toHaveLength(2);
@@ -113,7 +116,7 @@ describe("Character Validators Test", () => {
 
     test("name filter returns exact match", async () => {
         const res = await request(app)
-            .get("/api/v1/characters?name=Lisa")
+            .get("/v1/characters?name=Lisa")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual(["lisa"]);
@@ -121,7 +124,7 @@ describe("Character Validators Test", () => {
 
     test("versionAdded filter returns matching entries", async () => {
         const res = await request(app)
-            .get("/api/v1/characters?versionAdded=1.0&sortBy=name&sortOrder=asc")
+            .get("/v1/characters?versionAdded=1.0&sortBy=name&sortOrder=asc")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual(["lisa", "sucrose"]);
@@ -129,7 +132,7 @@ describe("Character Validators Test", () => {
 
     test("releaseDate filter matches characters released that day", async () => {
         const res = await request(app)
-            .get("/api/v1/characters?releaseDate=2020-12-23")
+            .get("/v1/characters?releaseDate=2020-12-23")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual(["albedo"]);
@@ -137,7 +140,7 @@ describe("Character Validators Test", () => {
 
     test("invalid sort field yields 400", async () => {
         const res = await request(app)
-            .get("/api/v1/characters?sortBy=invalidField")
+            .get("/v1/characters?sortBy=invalidField")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(400);
         expect(res.body.success).toBe(false);
@@ -145,7 +148,7 @@ describe("Character Validators Test", () => {
 
     test("update rejects changing immutable id", async () => {
         const res = await request(app)
-            .put("/api/v1/characters/albedo")
+            .put("/v1/characters/albedo")
             .set("Authorization", `Bearer ${adminToken}`)
             .send({ id: "new-id" });
 

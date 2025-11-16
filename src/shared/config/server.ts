@@ -7,7 +7,6 @@ import { HTTP_STATUS } from "./constants";
 
 export const serverConfig = {
     port: environment.PORT,
-    apiPrefix: environment.API_PREFIX,
     compression: {
         level: 6,
         threshold: 1024,
@@ -33,7 +32,7 @@ export const createServer = (): Application => {
     app.use(express.json({ limit: "10mb" }));
     
 
-    app.get(`${environment.API_PREFIX}${environment.API_VERSION}/health`, (_req, res) => {
+    app.get(`${environment.API_VERSION}/health`, (_req, res) => {
         res.status(HTTP_STATUS.OK).json({
             success: true,
             data: {

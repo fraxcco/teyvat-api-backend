@@ -15,6 +15,8 @@ An open-source REST API providing structured data on Genshin Impact characters a
 - **Rate Limiting & Security**: Built-in protection with validation, CORS, and configurable limits (e.g., 100 requests per 15 minutes).
 - **Open-Source**: Hosted on GitHub with MongoDB; extensible for adding new data.
 
+For full documentation and examples, see the [official docs website](https://teyvat-api-docs.vercel.app).
+
 ## Prerequisites
 
 - **Git**: For cloning the repo.
@@ -43,7 +45,6 @@ An open-source REST API providing structured data on Genshin Impact characters a
      PORT=3000
      MONGODB_URI=mongodb://localhost:27017/teyvat
      JWT_SECRET=your-super-secret-key-here
-     API_PREFIX=/api
      API_VERSION=/v1
      ```
    - Adjust for your MongoDB setup.
@@ -63,7 +64,7 @@ An open-source REST API providing structured data on Genshin Impact characters a
 5. **Verify Setup**:
    - Ping the health endpoint:
      ```bash
-     curl http://localhost:3000/api/v1/health
+     curl http://localhost:3000/v1/health
      ```
      Expected: `{"success": true, "data": {"status": "OK", ...}}`
 
@@ -74,12 +75,12 @@ Register an account, create an API key, and fetch data:
 
 ```bash
 # Register
-curl -X POST http://localhost:3000/api/v1/auth/register \
+curl -X POST http://localhost:3000/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{"username": "testuser", "email": "test@example.com", "password": "SecurePass123"}'
 
 # Login (get tokens)
-curl -X POST http://localhost:3000/api/v1/auth/login \
+curl -X POST http://localhost:3000/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "test@example.com", "password": "SecurePass123"}'
 
@@ -90,21 +91,21 @@ curl -X POST http://localhost:3000/api/v1/auth/apikeys \
   -d '{"label": "My Key"}'
 
 # Fetch characters (use API key)
-curl "http://localhost:3000/api/v1/characters?limit=5" \
+curl "http://localhost:3000/v1/characters?limit=5" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
 ### JavaScript Example
 ```javascript
 // Fetch character details
-fetch("http://localhost:3000/api/v1/characters/diluc", {
+fetch("http://localhost:3000/v1/characters/diluc", {
   headers: { "X-API-Key": "YOUR_API_KEY" }
 })
   .then(res => res.json())
   .then(data => console.log(data.data));
 
 // Fetch artifacts with filters
-fetch("http://localhost:3000/api/v1/artifacts?region=Mondstadt&rarity=5", {
+fetch("http://localhost:3000/v1/artifacts?region=Mondstadt&rarity=5", {
   headers: { "X-API-Key": "YOUR_API_KEY" }
 })
   .then(res => res.json())
@@ -132,44 +133,46 @@ Errors include `"success": false` with a message and status code.
 ### Authentication
 | Method | Route                     | Description                      | Auth |
 |--------|---------------------------|----------------------------------|------|
-| POST   | /api/v1/auth/register     | Register user, returns tokens.   | No   |
-| POST   | /api/v1/auth/login        | Sign in, returns tokens.         | No   |
-| POST   | /api/v1/auth/refresh      | Rotate tokens.                   | No   |
-| POST   | /api/v1/auth/logout       | Revoke refresh token.            | No   |
-| PUT    | /api/v1/auth/change-password | Change password.              | Yes  |
-| POST   | /api/v1/auth/apikeys      | Create API key.                  | Yes  |
-| GET    | /api/v1/auth/apikeys      | List API keys.                   | Yes  |
-| DELETE | /api/v1/auth/apikeys      | Revoke API key.                  | Yes  |
+| POST   | /v1/auth/register     | Register user, returns tokens.   | No   |
+| POST   | /v1/auth/login        | Sign in, returns tokens.         | No   |
+| POST   | /v1/auth/refresh      | Rotate tokens.                   | No   |
+| POST   | /v1/auth/logout       | Revoke refresh token.            | No   |
+| PUT    | /v1/auth/change-password | Change password.              | Yes  |
+| POST   | /v1/auth/apikeys      | Create API key.                  | Yes  |
+| GET    | /v1/auth/apikeys      | List API keys.                   | Yes  |
+| DELETE | /v1/auth/apikeys      | Revoke API key.                  | Yes  |
 
 ### Users
 | Method | Route              | Description              | Auth |
 |--------|--------------------|--------------------------|------|
-| GET    | /api/v1/users/me   | Current user profile.    | Yes  |
-| PUT    | /api/v1/users/me   | Update profile.          | Yes  |
-| GET    | /api/v1/users      | List all users.          | Yes (admin) |
-| GET    | /api/v1/users/:id  | User details by ID.      | Yes (admin) |
+| GET    | /v1/users/me   | Current user profile.    | Yes  |
+| PUT    | /v1/users/me   | Update profile.          | Yes  |
+| GET    | /v1/users      | List all users.          | Yes (admin) |
+| GET    | /v1/users/:id  | User details by ID.      | Yes (admin) |
 
 ### Characters
 | Method | Route                    | Description                          | Auth |
 |--------|--------------------------|--------------------------------------|------|
-| GET    | /api/v1/characters       | List with filters/pagination.        | No   |
-| GET    | /api/v1/characters/:id   | Details by ID.                       | No   |
-| POST   | /api/v1/characters       | Create character.                    | Yes (admin) |
-| PUT    | /api/v1/characters/:id   | Update character.                    | Yes (admin) |
-| DELETE | /api/v1/characters/:id   | Delete character.                    | Yes (admin) |
+| GET    | /v1/characters       | List with filters/pagination.        | No   |
+| GET    | /v1/characters/:id   | Details by ID.                       | No   |
+| POST   | /v1/characters       | Create character.                    | Yes (admin) |
+| PUT    | /v1/characters/:id   | Update character.                    | Yes (admin) |
+| DELETE | /v1/characters/:id   | Delete character.                    | Yes (admin) |
 
 Supported query params: `name`, `rarity`, `region`, `element`, `weaponType`, `releaseDate`, `versionAdded`, `page`, `limit`, `sortBy`, `sortOrder`.
 
 ### Artifacts
 | Method | Route                    | Description                          | Auth |
 |--------|--------------------------|--------------------------------------|------|
-| GET    | /api/v1/artifacts        | List with filters/pagination.        | No   |
-| GET    | /api/v1/artifacts/:id    | Details by ID.                       | No   |
-| POST   | /api/v1/artifacts        | Create artifact.                     | Yes (admin) |
-| PUT    | /api/v1/artifacts/:id    | Update artifact.                     | Yes (admin) |
-| DELETE | /api/v1/artifacts/:id    | Delete artifact.                     | Yes (admin) |
+| GET    | /v1/artifacts        | List with filters/pagination.        | No   |
+| GET    | /v1/artifacts/:id    | Details by ID.                       | No   |
+| POST   | /v1/artifacts        | Create artifact.                     | Yes (admin) |
+| PUT    | /v1/artifacts/:id    | Update artifact.                     | Yes (admin) |
+| DELETE | /v1/artifacts/:id    | Delete artifact.                     | Yes (admin) |
 
 Supported query params: `name`, `rarity`, `region`, `releaseDate`, `versionAdded`, `page`, `limit`, `sortBy`, `sortOrder`.
+
+For full documentation and examples, see the [official docs website](https://docs.teyvatapi.xyz/).
 
 ## Testing
 

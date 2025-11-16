@@ -27,19 +27,20 @@ describe("Artifact Test", () => {
 
     test("list initially empty", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts")
+            .get("/v1/artifacts")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual([]);
     });
 
     test("create artifact requires auth", async () => {
-        const res = await request(app).post("/api/v1/artifacts").send({});
+        const res = await request(app).post("/v1/artifacts").send({});
         expect(res.status).toBe(401);
     });
 
     test("admin creates artifact", async () => {
         const res = await createArtifactApi(
+            apiKey,
             adminToken,
             buildArtifactPayload({
                 id: "crimson_witch_of_flames",
@@ -56,6 +57,7 @@ describe("Artifact Test", () => {
     
     test("duplicate artifact creation returns 409", async () => {
         const res = await createArtifactApi(
+            apiKey,
             adminToken,
             buildArtifactPayload({ id: "crimson_witch_of_flames" })
         );
@@ -65,7 +67,7 @@ describe("Artifact Test", () => {
 
     test("list returns IDs and pagination", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts?region=Mondstadt&limit=10")
+            .get("/v1/artifacts?region=Mondstadt&limit=10")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toContain("crimson_witch_of_flames");
@@ -74,7 +76,7 @@ describe("Artifact Test", () => {
 
     test("fetch details by id", async () => {
         const res = await request(app)
-            .get("/api/v1/artifacts/crimson_witch_of_flames")
+            .get("/v1/artifacts/crimson_witch_of_flames")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data.name).toBe("Crimson Witch of Flames");
@@ -82,7 +84,7 @@ describe("Artifact Test", () => {
 
     test("update artifact works", async () => {
         const res = await request(app)
-            .put("/api/v1/artifacts/crimson_witch_of_flames")
+            .put("/v1/artifacts/crimson_witch_of_flames")
             .set("Authorization", `Bearer ${adminToken}`)
             .send({ region: "Liyue" });
 
@@ -92,13 +94,13 @@ describe("Artifact Test", () => {
 
     test("delete artifact", async () => {
         const res = await request(app)
-            .delete("/api/v1/artifacts/crimson_witch_of_flames")
+            .delete("/v1/artifacts/crimson_witch_of_flames")
             .set("Authorization", `Bearer ${adminToken}`);
 
         expect(res.status).toBe(204);
 
         const lookup = await request(app)
-            .get("/api/v1/artifacts/crimson_witch_of_flames")
+            .get("/v1/artifacts/crimson_witch_of_flames")
             .set("X-API-Key", apiKey);
         expect(lookup.status).toBe(404);
     });

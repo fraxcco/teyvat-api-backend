@@ -29,7 +29,7 @@ export enum ArtifactName {
     BLIZZARD_STRAYER = "Blizzard Strayer",
     HEART_OF_DEPTH = "Heart of Depth",
 
-    // Liyue & Abyssal Domains
+    // Liyue
     PALE_FLAME = "Pale Flame",
     LAVA_WALKER = "Lavawalker",
     ARCHAIC_PETRA = "Archaic Petra",

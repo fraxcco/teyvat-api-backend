@@ -26,14 +26,14 @@ describe("Security Validators Test", () => {
     });
 
     test("Missing Authorization header on protected route returns 401", async () => {
-        const res = await request(app).get("/api/v1/users");
+        const res = await request(app).get("/v1/users");
         expect(res.status).toBe(401);
         expect(res.body.success).toBe(false);
     });
 
     test("Authorization without Bearer prefix returns 401", async () => {
         const res = await request(app)
-            .get("/api/v1/users/me")
+            .get("/v1/users/me")
             .set("Authorization", adminToken);
 
         expect(res.status).toBe(401);
@@ -42,7 +42,7 @@ describe("Security Validators Test", () => {
 
     test("Authorization with empty bearer token returns 401", async () => {
         const res = await request(app)
-            .get("/api/v1/users/me")
+            .get("/v1/users/me")
             .set("Authorization", "Bearer ");
 
         expect(res.status).toBe(401);
@@ -51,7 +51,7 @@ describe("Security Validators Test", () => {
 
     test("user role cannot access admin-only list", async () => {
         const res = await request(app)
-            .get("/api/v1/users")
+            .get("/v1/users")
             .set("Authorization", `Bearer ${userToken}`);
 
         expect(res.status).toBe(403);
@@ -60,7 +60,7 @@ describe("Security Validators Test", () => {
 
     test("admin can access user list", async () => {
         const res = await request(app)
-            .get("/api/v1/users")
+            .get("/v1/users")
             .set("Authorization", `Bearer ${adminToken}`);
 
         expect(res.status).toBe(200);
@@ -69,14 +69,14 @@ describe("Security Validators Test", () => {
     });
 
     test("public endpoint requires API key", async () => {
-        const res = await request(app).get("/api/v1/characters");
+        const res = await request(app).get("/v1/characters");
         expect(res.status).toBe(401);
         expect(res.body.success).toBe(false);
     });
 
     test("public endpoint accepts API key", async () => {
         const res = await request(app)
-            .get("/api/v1/characters")
+            .get("/v1/characters")
             .set("X-API-Key", apiKey);
 
         expect(res.status).toBe(200);
@@ -85,7 +85,7 @@ describe("Security Validators Test", () => {
 
     test("OPTIONS preflight carries CORS headers", async () => {
         const res = await request(app)
-            .options("/api/v1/characters")
+            .options("/v1/characters")
             .set("Origin", "http://127.0.0.1:5500")
             .set("Access-Control-Request-Method", "GET");
 

@@ -32,20 +32,20 @@ describe("Character Test", () => {
 
     test("initial list is empty", async () => {
         const res = await request(app)
-            .get("/api/v1/characters")
+            .get("/v1/characters")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data).toEqual([]);
     });
 
     test("creation without token returns 401", async () => {
-        const res = await request(app).post("/api/v1/characters").send({});
+        const res = await request(app).post("/v1/characters").send({});
         expect(res.status).toBe(401);
     });
 
     test("creation with user role returns 403", async () => {
         const res = await request(app)
-            .post("/api/v1/characters")
+            .post("/v1/characters")
             .set("Authorization", `Bearer ${userToken}`)
             .send({ id: "amber", name: "Amber" });
 
@@ -54,6 +54,7 @@ describe("Character Test", () => {
 
     test("admin creates character", async () => {
         const res = await createCharacterApi(
+            apiKey,
             adminToken,
             buildCharacterPayload({
                 id: "diluc",
@@ -84,6 +85,8 @@ describe("Character Test", () => {
                 },
                 talents: {
                     normalAttack: { name: "Tempered Sword", description: "four strikes" },
+                    chargedAttack: { name: "Searing Onslaught", description: "heavy slash" },
+                    plungingAttack: { name: "Plunging Attack", description: "plunge from mid-air" },
                     elementSkill: { name: "Searing Onslaught", description: "Pyro slash", energyCost: 0, duration: 0, cooldown: 10 },
                     elementalBurst: { name: "Dawn", description: "Flame phoenix", energyCost: 40, duration: 0, cooldown: 12 },
                 },
@@ -95,6 +98,7 @@ describe("Character Test", () => {
 
     test("duplicate creation returns 409", async () => {
         const res = await createCharacterApi(
+            apiKey,
             adminToken,
             buildCharacterPayload({
                 id: "diluc",
@@ -107,7 +111,7 @@ describe("Character Test", () => {
 
     test("list supports filters and pagination metadata", async () => {
         const res = await request(app)
-            .get("/api/v1/characters?region=Mondstadt&element=Pyro&limit=5")
+            .get("/v1/characters?region=Mondstadt&element=Pyro&limit=5")
             .set("X-API-Key", apiKey);
 
         expect(res.status).toBe(200);
@@ -117,7 +121,7 @@ describe("Character Test", () => {
 
     test("get by id works", async () => {
         const res = await request(app)
-            .get("/api/v1/characters/diluc")
+            .get("/v1/characters/diluc")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(200);
         expect(res.body.data.name).toBe("Diluc");
@@ -125,14 +129,14 @@ describe("Character Test", () => {
 
     test("nonexistent character returns 404", async () => {
         const res = await request(app)
-            .get("/api/v1/characters/nonexistent")
+            .get("/v1/characters/nonexistent")
             .set("X-API-Key", apiKey);
         expect(res.status).toBe(404);
     });
 
     test("update requires admin and applies changes", async () => {
         const res = await request(app)
-            .put("/api/v1/characters/diluc")
+            .put("/v1/characters/diluc")
             .set("Authorization", `Bearer ${adminToken}`)
             .send({ region: "Liyue" });
 
@@ -142,13 +146,13 @@ describe("Character Test", () => {
 
     test("delete removes record", async () => {
         const res = await request(app)
-            .delete("/api/v1/characters/diluc")
+            .delete("/v1/characters/diluc")
             .set("Authorization", `Bearer ${adminToken}`);
 
         expect(res.status).toBe(204);
 
         const lookup = await request(app)
-            .get("/api/v1/characters/diluc")
+            .get("/v1/characters/diluc")
             .set("X-API-Key", apiKey);
         expect(lookup.status).toBe(404);
     });
