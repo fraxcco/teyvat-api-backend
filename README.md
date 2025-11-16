@@ -15,7 +15,7 @@ An open-source REST API providing structured data on Genshin Impact characters a
 - **Rate Limiting & Security**: Built-in protection with validation, CORS, and configurable limits (e.g., 100 requests per 15 minutes).
 - **Open-Source**: Hosted on GitHub with MongoDB; extensible for adding new data.
 
-For full documentation and examples, see the [official docs website](https://teyvat-api-docs.vercel.app).
+For full documentation and examples, see the [official docs website](https://docs.teyvatapi.xyz/).
 
 ## Prerequisites
 
