@@ -3,7 +3,6 @@ import { environment } from "./environment";
 import compression from "compression";
 import helmet from "helmet";
 import cors from "cors";
-import { HTTP_STATUS } from "./constants";
 
 export const serverConfig = {
     port: environment.PORT,
@@ -22,7 +21,6 @@ export const serverConfig = {
 
 export const createServer = (): Application => {
     const app = express();
-
     app.set("trust proxy", 1);
 
     app.use(helmet());
@@ -30,19 +28,6 @@ export const createServer = (): Application => {
     app.use(compression(serverConfig.compression));
     app.use(express.urlencoded({ extended: true, limit: "10mb" }));
     app.use(express.json({ limit: "10mb" }));
-    
-
-    app.get(`${environment.API_VERSION}/health`, (_req, res) => {
-        res.status(HTTP_STATUS.OK).json({
-            success: true,
-            data: {
-                status: "OK",
-                uptime: process.uptime(),
-                timestamp: new Date().toISOString(),
-                environment: environment.NODE_ENV,
-            }
-        });
-    });
 
     return app;
 };

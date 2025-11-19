@@ -12,7 +12,6 @@ export const environment = {
 
     // API
     API_VERSION: getEnv("API_VERSION"),
-    API_PREFIX: getEnv("API_PREFIX"),
 
     // Security
     JWT_SECRET: getEnv("JWT_SECRET"),
