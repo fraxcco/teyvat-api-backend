@@ -22,28 +22,21 @@ const ArtifactSchema = new mongoose.Schema<IArtifact>({
     versionKey: false,
 });
 
-ArtifactSchema.index({ name: "text" }); 
+ArtifactSchema.index({ name: "text" });
 ArtifactSchema.index({ id: 1 }, { unique: true });
-ArtifactSchema.index({ region: 1 });
-ArtifactSchema.index({ rarity: 1 });
-ArtifactSchema.pre("save", function(next) {
-    if(this.isModified("id") && this.get("id")) {
-        this.set("id", String(this.get("id")).toLowerCase());
-    };
-
+ArtifactSchema.index({ name: 1 }, { collation: { locale: "en", strength: 2 } });
+ArtifactSchema.index({ rarity: 1, region: 1 });
+ArtifactSchema.index({ releaseDate: -1, name: 1 });
+ArtifactSchema.pre("save", function (next) {
+    if(this.isModified("id") && this.get("id")) this.set("id", String(this.get("id")).toLowerCase());
     next();
 });
 
-ArtifactSchema.pre("findOneAndUpdate", function(next) {
+ArtifactSchema.pre("findOneAndUpdate", function (next) {
     const update: any = this.getUpdate() || {};
 
-    if(update.id) {
-        update.id = String(update.id).toLowerCase();
-    };
-
-    if(update.$set && update.$set.id) {
-        update.$set.id = String(update.$set.id).toLowerCase();
-    };
+    if(update.id) update.id = String(update.id).toLowerCase();
+    if(update.$set && update.$set.id) update.$set.id = String(update.$set.id).toLowerCase();
 
     this.setUpdate(update);
     next();

@@ -64,22 +64,21 @@ const CharacterSchema = new mongoose.Schema<ICharacter>({
 
 CharacterSchema.index({ name: "text", description: "text" });
 CharacterSchema.index({ id: 1 }, { unique: true });
-CharacterSchema.index({ region: 1 });
-CharacterSchema.index({ element: 1 });
-CharacterSchema.index({ weaponType: 1 });
-CharacterSchema.index({ rarity: 1 });
+CharacterSchema.index({ name: 1 }, { collation: { locale: "en", strength: 2 } });
+CharacterSchema.index({ rarity: 1, element: 1, region: 1 });
+CharacterSchema.index({ releaseDate: -1, name: 1 });
 CharacterSchema.pre("save", function (next) {
-    const doc: any = this;
-    if (doc.id) doc.id = String(doc.id).toLowerCase();
+    if(this.id) this.id = String(this.id).toLowerCase();
     next();
 });
 
 CharacterSchema.pre("findOneAndUpdate", function (next) {
     const update: any = this.getUpdate() || {};
-    if (update.id) update.id = String(update.id).toLowerCase();
-    if (update.$set && update.$set.id) update.$set.id = String(update.$set.id).toLowerCase();
-    this.setUpdate(update);
 
+    if(update.id) update.id = String(update.id).toLowerCase();
+    if(update.$set && update.$set.id) update.$set.id = String(update.$set.id).toLowerCase();
+    
+    this.setUpdate(update);
     next();
 });
 

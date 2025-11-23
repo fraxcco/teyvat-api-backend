@@ -7,8 +7,9 @@ let isConnected = false;
 export const databaseConfig = {
     uri: environment.MONGODB_URI,
     options: {
-        maxPoolSize: environment.NODE_ENV === "test" ? 10 : 20,
-        serverSelectionTimeoutMS: 5000,
+        minPoolSize: 0,
+        maxPoolSize: environment.NODE_ENV === "test" ? 10 : 5,
+        serverSelectionTimeoutMS: 3000,
         socketTimeoutMS: 45000,
         bufferCommands: true,
         retryWrites: true,
@@ -21,12 +22,12 @@ export const connectDatabase = async (): Promise<void> => {
 
     try {
         await mongoose.connect(databaseConfig.uri, databaseConfig.options);
-        
+
         const { host, name } = mongoose.connection;
         console.log(`✅ | Database connected: ${host}/${name}`);
-        
+
         isConnected = true;
-    } catch(error) {
+    } catch (error) {
         console.error(`❌ | Database connection failed: ${error}`);
 
         isConnected = false;
