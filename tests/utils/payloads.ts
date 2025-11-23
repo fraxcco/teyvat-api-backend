@@ -32,7 +32,7 @@ export const buildCharacterPayload = (overrides: Record<string, unknown> = {}) =
         normalAttack: { name: "Normal Attack", description: "Performs consecutive strikes." },
         chargedAttack: { name: "Charged Attack", description: "Performs a charged attack." },
         plungingAttack: { name: "Plunging Attack", description: "Performs a plunging attack." },
-        elementSkill: { name: "Elemental Skill", description: "Deals elemental damage.", energyCost: 0, duration: 0, cooldown: 10 },
+        elementalSkill: { name: "Elemental Skill", description: "Deals elemental damage.", energyCost: 0, duration: 0, cooldown: 10 },
         elementalBurst: { name: "Elemental Burst", description: "Massive elemental damage.", energyCost: 40, duration: 0, cooldown: 12 },
     },
     ...overrides,

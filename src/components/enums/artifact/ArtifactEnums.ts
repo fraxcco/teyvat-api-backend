@@ -31,7 +31,7 @@ export enum ArtifactName {
 
     // Liyue
     PALE_FLAME = "Pale Flame",
-    LAVA_WALKER = "Lavawalker",
+    LAVAWALKER = "Lavawalker",
     ARCHAIC_PETRA = "Archaic Petra",
     NOBLESSE_OBLIGE = "Noblesse Oblige",
     RETRACING_BOLIDE = "Retracing Bolide",
@@ -89,4 +89,5 @@ export enum ArtifactRegion {
     NATLAN = "Natlan",
     NOD_KRAI = "Nod-Krai",
     SNEZHNAYA = "Snezhnaya",
+    NONE = "None",
 };

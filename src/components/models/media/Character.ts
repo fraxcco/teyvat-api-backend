@@ -18,22 +18,22 @@ const createAscensionStatsSchema = (): Record<string, any> => {
 
 const createTalentSchema = (type: "basic" | "full"): Record<string, any> => {
     const schema: Record<string, any> = {
-        name: { type: String, required: true },
-        description: { type: String, required: true }
+        name: { type: String },
+        description: { type: String }
     };
-    
-    if(type === "full") {
-        schema.energyCost = { type: Number, required: false };
-        schema.cooldown = { type: Number, required: false };
-        schema.duration = { type: Number, required: false };
+
+    if (type === "full") {
+        schema.energyCost = { type: Number };
+        schema.cooldown = { type: Number };
+        schema.duration = { type: Number };
     };
 
     return schema;
 };
 
 const CharacterSchema = new mongoose.Schema<ICharacter>({
-    id: { type: String, required: true, trim: true, minlength: 1, maxlength: 50 },
-    name: { type: String, required: true, trim: true, minlength: 1, maxlength: 50 },
+    id: { type: String, required: true, lowercase: true, trim: true },
+    name: { type: String, required: true, trim: true },
     rarity: { type: Number, enum: RARITY_VALUES, required: true },
     region: { type: String, enum: REGION_VALUES, required: true },
     element: { type: String, enum: ELEMENT_VALUES, required: true },
@@ -42,20 +42,20 @@ const CharacterSchema = new mongoose.Schema<ICharacter>({
     releaseDate: { type: Date, required: true, set: (value: unknown) => (value ? new Date(value as string) : value), max: new Date() },
     constellations: [{
         level: { type: Number, required: true, min: 0, max: 6 },
-        name: { type: String, required: true, trim: true, maxlength: 100 },
-        description: { type: String, required: true, trim: true, maxlength: 500 }
+        name: { type: String, required: true, trim: true },
+        description: { type: String, required: true, trim: true }
     }],
     stats: {
-        baseHP: { type: Number, required: true, min: 0 },
-        baseATK: { type: Number, required: true, min: 0 },
-        baseDEF: { type: Number, required: true, min: 0 },
+        baseHP: { type: Number, required: true },
+        baseATK: { type: Number, required: true },
+        baseDEF: { type: Number, required: true },
         ascensionStats: createAscensionStatsSchema()
     },
     talents: {
         normalAttack: createTalentSchema("basic"),
         chargedAttack: createTalentSchema("basic"),
         plungingAttack: createTalentSchema("basic"),
-        elementSkill: createTalentSchema("full"),
+        elementalSkill: createTalentSchema("full"),
         elementalBurst: createTalentSchema("full")
     }
 }, {
@@ -68,18 +68,18 @@ CharacterSchema.index({ region: 1 });
 CharacterSchema.index({ element: 1 });
 CharacterSchema.index({ weaponType: 1 });
 CharacterSchema.index({ rarity: 1 });
-CharacterSchema.pre("save", function(next) {
+CharacterSchema.pre("save", function (next) {
     const doc: any = this;
-    if(doc.id) doc.id = String(doc.id).toLowerCase();
+    if (doc.id) doc.id = String(doc.id).toLowerCase();
     next();
 });
 
-CharacterSchema.pre("findOneAndUpdate", function(next) {
+CharacterSchema.pre("findOneAndUpdate", function (next) {
     const update: any = this.getUpdate() || {};
-    if(update.id) update.id = String(update.id).toLowerCase();
-    if(update.$set && update.$set.id) update.$set.id = String(update.$set.id).toLowerCase();
+    if (update.id) update.id = String(update.id).toLowerCase();
+    if (update.$set && update.$set.id) update.$set.id = String(update.$set.id).toLowerCase();
     this.setUpdate(update);
-    
+
     next();
 });
 

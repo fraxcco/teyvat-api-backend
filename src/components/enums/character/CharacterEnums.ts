@@ -11,7 +11,8 @@ export enum CharacterRegion {
     FONTAINE = "Fontaine",
     NATLAN = "Natlan",
     NOD_KRAI = "Nod-Krai",
-    SNEZHNAYA = "Snezhnaya"
+    SNEZHNAYA = "Snezhnaya",
+    NONE = "None"
 };
 
 export enum CharacterElement {
@@ -21,7 +22,8 @@ export enum CharacterElement {
     DENDRO = "Dendro",
     HYDRO = "Hydro",
     PYRO = "Pyro",
-    CRYO = "Cryo"
+    CRYO = "Cryo",
+    NONE = "None"
 };
 
 export enum CharacterWeaponType {

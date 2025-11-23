@@ -87,7 +87,7 @@ describe("Character Test", () => {
                     normalAttack: { name: "Tempered Sword", description: "four strikes" },
                     chargedAttack: { name: "Searing Onslaught", description: "heavy slash" },
                     plungingAttack: { name: "Plunging Attack", description: "plunge from mid-air" },
-                    elementSkill: { name: "Searing Onslaught", description: "Pyro slash", energyCost: 0, duration: 0, cooldown: 10 },
+                    elementalSkill: { name: "Searing Onslaught", description: "Pyro slash", energyCost: 0, duration: 0, cooldown: 10 },
                     elementalBurst: { name: "Dawn", description: "Flame phoenix", energyCost: 40, duration: 0, cooldown: 12 },
                 },
             })

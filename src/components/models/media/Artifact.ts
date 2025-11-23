@@ -11,12 +11,12 @@ const ArtifactSchema = new mongoose.Schema<IArtifact>({
     id: { type: String, enum: ID_VALUES, required: true, lowercase: true, trim: true },
     name: { type: String, enum: NAME_VALUES, required: true },
     rarity: { type: Number, enum: RARITY_VALUES, required: true },
-    versionAdded: { type: String, required: true, trim: true, match: /^\d+\.\d+$/ },
-    releaseDate: { type: Date, required: true, set: (value: unknown) => (value ? new Date(value as string) : value), max: new Date() },
     region: { type: String, enum: REGION_VALUES, required: true },
+    versionAdded: { type: String, required: true, trim: true },
+    releaseDate: { type: Date, required: true, set: (value: unknown) => (value ? new Date(value as string) : value), max: new Date() },
     setBonus: {
-        twoPiece: { type: String, required: true },
-        fourPiece: { type: String, required: true }
+        twoPiece: { type: String },
+        fourPiece: { type: String }
     }
 }, {
     versionKey: false,
