@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
-import type { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { environment } from "./environment";
+import { IUser, IArtifact, ICharacter } from "../../components/interfaces/";
+type AllowedModels = Model<IUser> | Model<IArtifact> | Model<ICharacter>;
 
 let isConnected = false;
 
@@ -32,7 +33,7 @@ export const connectDatabase = async (): Promise<void> => {
 
         isConnected = false;
         process.exit(1);
-    };
+    }
 };
 
 export const disconnectDatabase = async (): Promise<void> => {
@@ -43,18 +44,18 @@ export const disconnectDatabase = async (): Promise<void> => {
     isConnected = false;
 };
 
-const clearCollections = async (models: ReadonlyArray<Model<any>>): Promise<void> => {
+const clearCollections = async (models: ReadonlyArray<AllowedModels>): Promise<void> => {
     if(!models?.length) return;
 
-    await Promise.all(models.map((model) => model.deleteMany({})));
+    await Promise.all(models.map((model) => (model as Model<unknown>).deleteMany({})))
 };
 
-export const setupTestDatabase = async (models: ReadonlyArray<Model<any>>): Promise<void> => {
+export const setupTestDatabase = async (models: ReadonlyArray<AllowedModels>): Promise<void> => {
     await connectDatabase();
     await clearCollections(models);
 };
 
-export const teardownTestDatabase = async (models: ReadonlyArray<Model<any>>): Promise<void> => {
+export const teardownTestDatabase = async (models: ReadonlyArray<AllowedModels>): Promise<void> => {
     await clearCollections(models);
     await disconnectDatabase();
 };

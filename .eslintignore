@@ -1,0 +1,7 @@
+*.js
+.github
+node_modules
+scripts
+tests
+dist
+api

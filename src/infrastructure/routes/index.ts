@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { selectLimiter } from "../middleware";
 import { environment } from "../../shared/config/";
 import generalRoutes from "./general/generalRoutes";
 import characterRoutes from "./media/characterRoutes";
@@ -7,6 +8,7 @@ import authRoutes from "./user/authRoutes";
 import userRoutes from "./user/userRoutes";
 
 const router = Router();
+router.use(selectLimiter());
 
 router.get("/", (_req, res) => res.redirect("/v1"));
 router.use(`${environment.API_VERSION}/`, generalRoutes);

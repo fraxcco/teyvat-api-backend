@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export interface IUser extends Document {
+export interface IUser extends Partial<Document> {
     _id: string;
     role: string;
     email: string;
@@ -9,4 +9,4 @@ export interface IUser extends Document {
     createdAt: Date;
     updatedAt: Date;
     refreshToken?: string | null;
-};
+}

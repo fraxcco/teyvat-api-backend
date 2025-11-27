@@ -1,13 +1,10 @@
 import mongoose, { Schema } from "mongoose";
-import type { IApiKey } from "../../interfaces/user/IApiKey";
+import { IApiKey } from "../../interfaces/";
 
 const ApiKeySchema = new Schema<IApiKey>({
     key: { type: String, required: true, unique: true },
     label: { type: String, trim: true, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    versionKey: false
-});
+    userId: { type: String, required: true },
+}, { timestamps: { createdAt: true, updatedAt: false }, versionKey: false });
 
 export default mongoose.model<IApiKey>("ApiKey", ApiKeySchema);

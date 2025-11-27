@@ -1,7 +1,7 @@
 export enum CharacterRarity {
     FOUR_STAR = 4,
     FIVE_STAR = 5
-};
+}
 
 export enum CharacterRegion {
     MONDSTADT = "Mondstadt",
@@ -13,7 +13,7 @@ export enum CharacterRegion {
     NOD_KRAI = "Nod-Krai",
     SNEZHNAYA = "Snezhnaya",
     NONE = "None"
-};
+}
 
 export enum CharacterElement {
     ANEMO = "Anemo",
@@ -24,7 +24,7 @@ export enum CharacterElement {
     PYRO = "Pyro",
     CRYO = "Cryo",
     NONE = "None"
-};
+}
 
 export enum CharacterWeaponType {
     SWORD = "Sword",
@@ -32,7 +32,7 @@ export enum CharacterWeaponType {
     CATALYST = "Catalyst",
     CLAYMORE = "Claymore",
     BOW = "Bow"
-};
+}
 
 export enum CharacterAscensionStatType {
     HP_PERCENTAGE = "hpPercentage",
@@ -44,4 +44,4 @@ export enum CharacterAscensionStatType {
     CRIT_RATE = "critRate",
     CRIT_DMG = "critDMG",
     BONUS_DMG = "bonusDMG"
-};
+}

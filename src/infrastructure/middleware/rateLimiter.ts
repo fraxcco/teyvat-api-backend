@@ -1,26 +1,16 @@
 import { Request, Response } from "express";
-import { HTTP_STATUS, ERROR_MESSAGES } from "../../shared/config/constants";
-import { environment } from "../../shared/config/environment";
+import { HTTP_STATUS, ERROR_MESSAGES, environment } from "../../shared/config";
 import rateLimit from "express-rate-limit";
 
 export const createRateLimiter = (windowMs: number, max: number, message?: string) => {
     return rateLimit({ windowMs, max,
-        message: {
-            success: false,
-            error: {
-                message: message || ERROR_MESSAGES.TOO_MANY_REQUESTS,
-                statusCode: HTTP_STATUS.TOO_MANY_REQUESTS
-            },
-        },
+        message: { success: false, error: { message: message || ERROR_MESSAGES.TOO_MANY_REQUESTS, statusCode: HTTP_STATUS.TOO_MANY_REQUESTS }},
         standardHeaders: true,
         legacyHeaders: false,
         handler: (_req: Request, res: Response) => {
             res.status(HTTP_STATUS.TOO_MANY_REQUESTS).json({
                 success: false,
-                error: {
-                    message: message || ERROR_MESSAGES.TOO_MANY_REQUESTS,
-                    statusCode: HTTP_STATUS.TOO_MANY_REQUESTS
-                },
+                error: { message: message || ERROR_MESSAGES.TOO_MANY_REQUESTS, statusCode: HTTP_STATUS.TOO_MANY_REQUESTS }
             });
         },
     });

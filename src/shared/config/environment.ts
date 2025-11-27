@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { getEnv, getEnvNumber } from "../utils/envParams";
+import { getEnv, getEnvNumber } from "../utils";
 dotenv.config();
 
 export const environment = {

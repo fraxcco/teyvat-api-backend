@@ -10,4 +10,4 @@ export interface ArtifactQueryDto {
     versionAdded?: string;
     sortBy?: "name" | "rarity" | "region" | "releaseDate" | "versionAdded";
     sortOrder?: "asc" | "desc";
-};
+}

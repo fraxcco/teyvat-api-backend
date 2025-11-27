@@ -78,7 +78,7 @@ export enum ArtifactRarity {
     THREE_STAR = 3,
     FOUR_STAR = 4,
     FIVE_STAR = 5,
-};
+}
 
 export enum ArtifactRegion {
     MONDSTADT = "Mondstadt",
@@ -90,4 +90,4 @@ export enum ArtifactRegion {
     NOD_KRAI = "Nod-Krai",
     SNEZHNAYA = "Snezhnaya",
     NONE = "None",
-};
+}

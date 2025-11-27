@@ -1,14 +1,10 @@
-import { Router } from "express";
 import { body } from "express-validator";
-import { validate } from "../../middleware/validation";
-import { authenticateToken } from "../../middleware/authentication";
+import { Router } from "express";
 import { AuthController } from "../../../application/controllers/";
-import { selectLimiter } from "../../middleware/selectLimiter";
+import { validate, authenticateToken } from "../../middleware";
 
 const router = Router();
 const authController = new AuthController();
-router.use(selectLimiter());
-
 
 router.post("/register",
     validate([
@@ -35,7 +31,7 @@ router.post("/login",
 
             if(!credential) {
                 throw new Error("Email or username is required.");
-            };
+            }
             
             return true;
         }),
@@ -64,7 +60,7 @@ router.post("/logout",
 
             if(!fromBody && !fromHeader) {
                 throw new Error("Provide refreshToken in body or Authorization header.");
-            };
+            }
 
             return true;
         }),

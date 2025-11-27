@@ -16,7 +16,7 @@ export const applyDateLikeFilter = <T>(filter: Record<string, unknown>, field: k
         filter[field as string] = { $gte: start, $lte: end };
 
         return;
-    };
+    }
 
     filter[field as string] = { $regex: new RegExp(`^${stringValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") };
 };

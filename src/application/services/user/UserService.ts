@@ -1,19 +1,21 @@
-import { CustomError } from "../../../infrastructure/middleware/errorHandler";
-import { HTTP_STATUS } from "../../../shared/config/constants";
-import { UserRepository } from "../../repositories/";
+import { FilterQuery } from "mongoose";
+import { HTTP_STATUS } from "../../../shared/config/";
+import { UserPublic, UserRepository } from "../../repositories/";
+import { CustomError } from "../../../infrastructure/middleware";
+import { IUser } from "../../../components/interfaces";
 
 export class UserService {
     private userRepository: UserRepository = new UserRepository();
 
-    public async updateUser(id: string, updateData: { username?: string; email?: string }): Promise<any> {
+    public async updateUser(id: string, updateData: { username?: string; email?: string }): Promise<UserPublic> {
         const existingUser = await this.userRepository.findById(id);
 
         if(!existingUser) {
             throw new CustomError("User not found", HTTP_STATUS.NOT_FOUND);
-        };
+        }
 
         if(updateData.email || updateData.username) {
-            const baseFilter: any = { _id: { $ne: id } };
+            const baseFilter: FilterQuery<IUser> = { _id: { $ne: id } };
 
             if(updateData.email && updateData.username) {
                 baseFilter.$or = [{ email: updateData.email }, { username: updateData.username }];
@@ -21,29 +23,29 @@ export class UserService {
                 baseFilter.email = updateData.email;
             } else if(updateData.username) {
                 baseFilter.username = updateData.username;
-            };
+            }
 
             const conflict = await this.userRepository.findOne(baseFilter);
 
             if(conflict) {
                 throw new CustomError("Email or username already exists", HTTP_STATUS.CONFLICT);
-            };
-        };
+            }
+        }
 
-        return await this.userRepository.update(id, updateData);
-    };
+        return (await this.userRepository.update(id, updateData)) as UserPublic;
+    }
 
-    public async getUserById(id: string): Promise<any> {
+    public async getUserById(id: string): Promise<UserPublic> {
         const user = await this.userRepository.findById(id);
 
         if(!user) {
             throw new CustomError("User not found", HTTP_STATUS.NOT_FOUND);
-        };
+        }
 
         return user;
-    };
+    }
 
-    public async getAllUsers(): Promise<any[]> {
+    public async getAllUsers(): Promise<UserPublic[]> {
         return await this.userRepository.findAll();
-    };
+    }
 }

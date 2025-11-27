@@ -1,8 +1,8 @@
-import mongoose, { Document } from "mongoose";
+import { Document } from "mongoose";
 
-export interface IApiKey extends Document {
+export interface IApiKey extends Partial<Document> {
     key: string;
     label: string;
-    userId: mongoose.Types.ObjectId;
+    userId: string;
     createdAt: Date;
-};
+}

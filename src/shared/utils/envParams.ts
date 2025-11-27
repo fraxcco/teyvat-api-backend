@@ -4,7 +4,7 @@ export const getEnv = (key: string, def?: string) => {
     if(value === undefined || value === "") {
         if(def !== undefined) return def;
         throw new Error(`Environment variable ${key} is not set.`);
-    };
+    }
 
     return value;
 };

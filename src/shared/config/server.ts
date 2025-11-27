@@ -22,6 +22,7 @@ export const serverConfig = {
 export const createServer = (): Application => {
     const app = express();
     app.set("trust proxy", 1);
+    app.set("json spaces", 4);
 
     app.use(helmet());
     app.use(cors(serverConfig.cors));

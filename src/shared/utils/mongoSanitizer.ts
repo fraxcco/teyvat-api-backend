@@ -4,7 +4,7 @@ export const removeMongoID = <T>(input: T): T => {
 
     if(Array.isArray(input)) {
         return input.map((item) => removeMongoID(item)) as unknown as T;
-    };
+    }
 
     if(typeof input === "object") {
         const clean: Record<string, unknown> = {};
@@ -16,7 +16,7 @@ export const removeMongoID = <T>(input: T): T => {
         });
 
         return clean as T;
-    };
+    }
 
     return input;
 };
@@ -31,7 +31,7 @@ export const normalizeDocumentId = <T extends Record<string, unknown>>(document:
             ...document,
             [key]: value.toLowerCase(),
         } as T;
-    };
+    }
 
     return document;
 };

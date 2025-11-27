@@ -1,7 +1,6 @@
 import routes from "./infrastructure/routes";
 import { createServer } from "./shared/config/";
-import { errorHandler, notFoundHandler } from "./infrastructure/middleware/";
-import { requestLogger } from "./infrastructure/middleware/requestLogger";
+import { requestLogger, errorHandler, notFoundHandler } from "./infrastructure/middleware";
 const app = createServer();
 
 app.use(routes);

@@ -1,41 +1,7 @@
 import { CustomError } from "../../infrastructure/middleware/errorHandler";
-import { HTTP_STATUS } from "../config/constants";
-import { environment } from "../config/environment";
-
+import { MongoPaginationOptions, MongoPaginationResult, PaginationOptions, PaginationQueryParams, NormalizedPagination } from "../../components/interfaces/types/pagination.types";
+import { HTTP_STATUS, environment } from "../config/";
 const SORT_ORDERS = new Set(["asc", "desc"]);
-
-export interface MongoPaginationOptions<TSort extends string> {
-    page: number;
-    limit: number;
-    sortBy: TSort;
-    sortOrder: "asc" | "desc";
-    secondarySort?: TSort;
-};
-
-export interface MongoPaginationResult {
-    skip: number;
-    limit: number;
-    sort: Record<string, 1 | -1>;
-};
-
-export interface PaginationQueryParams {
-    page?: number | string;
-    limit?: number | string;
-    sortBy?: string;
-    sortOrder?: string;
-};
-
-export interface PaginationOptions<TAllowed extends string> {
-    allowedSortFields: ReadonlyArray<TAllowed>;
-    defaultSortBy: TAllowed;
-};
-
-export interface NormalizedPagination<TAllowed extends string> {
-    page: number;
-    limit: number;
-    sortBy: TAllowed;
-    sortOrder: "asc" | "desc";
-};
 
 export const normalizePaginationQuery = <TAllowed extends string>(query: PaginationQueryParams, { allowedSortFields, defaultSortBy }: PaginationOptions<TAllowed>): NormalizedPagination<TAllowed> => {
     const defaultPageSize = environment?.DEFAULT_PAGE_SIZE ?? 10;
@@ -53,13 +19,13 @@ export const normalizePaginationQuery = <TAllowed extends string>(query: Paginat
 
     if(!allowedSort.has(sortByCandidate)) {
         throw new CustomError(`Invalid sort field: ${sortByCandidate}`, HTTP_STATUS.BAD_REQUEST);
-    };
+    }
 
     const sortOrderRaw = (query.sortOrder ?? "asc").toString().toLowerCase();
-    
+
     if(query.sortOrder && !SORT_ORDERS.has(sortOrderRaw)) {
         throw new CustomError(`Invalid sort order: ${query.sortOrder}`, HTTP_STATUS.BAD_REQUEST);
-    };
+    }
 
     const sortOrder = (SORT_ORDERS.has(sortOrderRaw) ? sortOrderRaw : "asc") as "asc" | "desc";
 
@@ -72,7 +38,7 @@ export const buildMongoPagination = <TSort extends string>({ page, limit, sortBy
 
     if(secondarySort && secondarySort !== sortBy) {
         sort[secondarySort] = 1;
-    };
+    }
 
     return { skip: (page - 1) * limit, limit, sort };
 };

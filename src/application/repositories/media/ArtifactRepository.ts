@@ -1,45 +1,35 @@
 import Artifact from "../../../components/models/media/Artifact";
-import { IArtifact } from "../../../components/interfaces/";
 import { environment } from "../../../shared/config/environment";
-import { ArtifactQueryDto } from "../../../components/interfaces/";
-import { applyDateLikeFilter } from "../../../shared/utils/dateFilters";
-import { buildMongoPagination } from "../../../shared/utils/pagination";
-import { applyExactMatchFilter } from "../../../shared/utils/mongoFilters";
-import { normalizeDocumentId } from "../../../shared/utils/mongoSanitizer";
-import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
+import { IArtifact, ArtifactQueryDto } from "../../../components/interfaces/";
+import { applyDateLikeFilter, applyExactMatchFilter, buildMongoPagination, normalizeDocumentId  } from "../../../shared/utils";
+import { FilterQuery, UpdateQuery } from "mongoose";
 
 export class ArtifactRepository {
-    // CRUD Operations
     public async create(artifactData: Partial<IArtifact>): Promise<IArtifact> {
         const artifact = new Artifact(artifactData);
         return await artifact.save();
-    };
+    }
 
     public async delete(id: string): Promise<IArtifact | null> {
         const filter = normalizeDocumentId({ id }, "id");
         return await Artifact.findOneAndDelete(filter);
-    };
+    }
 
     public async update(id: string, updateData: UpdateQuery<IArtifact>): Promise<IArtifact | null> {
         const filter = normalizeDocumentId({ id }, "id");
         return await Artifact.findOneAndUpdate(filter, updateData, { new: true, runValidators: true });
-    };
+    }
 
-    // Read Operations
     public async findById(id: string): Promise<IArtifact | null> {
         const filter = normalizeDocumentId({ id }, "id");
         return await Artifact.findOne(filter).lean<IArtifact>();
-    };
+    }
 
     public async findOne(filter: FilterQuery<IArtifact>): Promise<IArtifact | null> {
         const normalizedFilter = normalizeDocumentId(filter, "id");
         return await Artifact.findOne(normalizedFilter).lean<IArtifact>();
-    };
+    }
 
-    /**
-     * sortBy: name, rarity, region, releaseDate, versionAdded
-     * sortOrder: asc, desc
-     */
     public async findWithPagination(query: ArtifactQueryDto, filter: FilterQuery<IArtifact> = {}): Promise<{ artifacts: IArtifact[]; total: number }> {
         const { page, limit, rarity, region, sortBy, sortOrder } = query;
 
@@ -53,16 +43,12 @@ export class ArtifactRepository {
 
         if(rarity !== undefined && rarity !== null) {
             normalizedFilter.rarity = Number(rarity);
-        };
+        }
 
         applyExactMatchFilter(filterRecord, "name", nameFilter);
         applyExactMatchFilter(filterRecord, "region", region);
         applyExactMatchFilter(filterRecord, "versionAdded", versionAddedFilter);
         applyDateLikeFilter<IArtifact>(normalizedFilter, "releaseDate", releaseDateFilter);
-
-        const options: QueryOptions = {
-            collation: { locale: "en", strength: 2 },
-        };
 
         const { skip, limit: pageLimit, sort } = buildMongoPagination({
             page: Number(page) || 1,
@@ -72,13 +58,16 @@ export class ArtifactRepository {
             secondarySort: "name",
         });
 
+        const isFilterEmpty = Object.keys(normalizedFilter).length === 0;
+        const countPromise = isFilterEmpty ? Artifact.estimatedDocumentCount() : Artifact.countDocuments(normalizedFilter);
+
         const [rows, total] = await Promise.all([
-            Artifact.find(normalizedFilter, null, options).sort(sort).skip(skip).limit(pageLimit).lean<IArtifact[]>(),
-            Artifact.countDocuments(normalizedFilter),
+            Artifact.find(normalizedFilter).sort(sort).skip(skip).limit(pageLimit).lean<IArtifact[]>(),
+            countPromise,
         ]);
 
-        const artifacts = (rows ?? []).map((artifact: any) => normalizeDocumentId(artifact)) as IArtifact[];
+        const artifacts = (rows ?? []).map((artifact: Partial<IArtifact>) => normalizeDocumentId(artifact)) as IArtifact[];
 
         return { artifacts, total };
-    };
-};
+    }
+}
