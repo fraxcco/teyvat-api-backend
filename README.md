@@ -13,7 +13,6 @@ An open-source REST API providing structured data on Genshin Impact characters a
 - **Search & Sorting**: Full-text search on names/descriptions, sortable by fields like `rarity` or `region`.
 - **Authentication**: tokens-based auth for protected routes; API keys for public reads to manage rate limits.
 - **Rate Limiting & Security**: Built-in protection with validation, CORS, and configurable limits (e.g., 100 requests per 15 minutes).
-- **Open-Source**: Hosted on GitHub with MongoDB; extensible for adding new data.
 
 For full documentation and examples, see the [official docs website](https://docs.teyvatapi.xyz/).
 
