@@ -29,6 +29,6 @@ jobs:
     - run: npm test
       env:
         NODE_ENV: test
-        JWT_SECRET: ${{ secrets.JWT_SECRET || "test_secret" }}
-        JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET || "test_refresh_secret" }}
-        MONGODB_URI: ${{ secrets.MONGODB_URI || "mongodb://localhost:27017/test" }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
