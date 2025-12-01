@@ -34,7 +34,7 @@
 		"@types/supertest": "^6.0.3",
 		"@typescript-eslint/eslint-plugin": "^8.48.0",
 		"@typescript-eslint/parser": "^8.48.0",
-		"@vercel/node": "^5.5.6",
+		"@vercel/node": "^5.5.13",
 		"eslint": "^8.57.1",
 		"jest": "^30.2.0",
 		"supertest": "^7.1.4",
